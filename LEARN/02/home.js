@@ -106,11 +106,11 @@ console.log(fruit.charAt(2));               //string char index 2 "n"
 console.log(fruit[2]);                      //string object index 2 "n"
 console.log(fruit.split(''));               //split at char gives array
 console.log(fruit.split(','));              //split at comma gives array
-*/
+
 
 //Array
-let fruits = ['banana', 'apple', 'orange','pinapples']; //common way
-/*let*/ fruits = new Array ('banana', 'apple', 'orange','pinapples'); //another way
+let fruits1 = ['banana', 'apple', 'orange','pinapples']; //common way
+let fruits = new Array ('banana', 'apple', 'orange','pinapples'); //another way
 
 console.log(fruits[2]);     //access array value at index 2nd
 
@@ -120,6 +120,137 @@ fruits[0] = 'pear';         //changes index 0 to pear
 for (let i = 0; i < fruits.length; i++){
     console.log(fruits[i]);
 }
+
+//array common methods
+console.log('to string', fruits.toString());
+console.log(fruits.join(' * '));
+console.log(fruits.pop(), fruits);                  //remove last items
+console.log(fruits.push('blackberries'), fruits);   //appends new items
+
+//another way to add a new item
+//4th location is empty or undefined
+fruits[4] = 'new fruit'; //however we can change 4 for "length"
+fruits[fruits.length] = 'new fruit2';
+console.log(fruits);
+
+//another way to remove is to shift the list, but it is EXPENSIVE
+fruits.shift(); //took out first item "pear"
+console.log(fruits);
+
+//another way to add but to the fist place item
+fruits.unshift('kiwi'); //add item to first place of array
+console.log(fruits);
+
+//join two array
+let vegetables = ['asparagus', 'tomato', 'brocoli']; //create array
+let allGroceries //create array bucket to place multiple array
+allGroceries = fruits.concat(vegetables); //join vegetables to fruits
+console.log(allGroceries); //display allGroceries in console
+
+//slice array
+let sliceArray = allGroceries.slice(1, 4); //at 1st place until 3rd place
+console.log(sliceArray);
+
+//reverse array
+let reverseArray = allGroceries.reverse();
+console.log(reverseArray);
+
+//sort array char
+let sortArray = allGroceries.sort(); //alphabetical sort
+console.log(sortArray);
+
+//sort array numbers
+let someNumbers = [15 , 10, 30, 20, 24, 405, 56, 60, 59]; //create number array
+//acending order
+let sortArray2 = someNumbers.sort(function (a,b){return a-b}); //compare a to b sort acending
+console.log(sortArray2)
+//decending order
+let sortArray3 = someNumbers.sort(function (a,b){return b-a}); //compare a to b sort decending
+console.log(sortArray3) 
+
+//create empty array and use for loop to populated it
+let emptyArray = new Array(); //create empty array
+for (let num = 0; num <10; num++) //num is index, loop 10 times
+{ 
+emptyArray.push('item ' + num);   // create new item 
+};
+console.log(emptyArray) // show new fullArray
+
+
+
+//object in Javascript
+
+let student = { 
+        first: 'martin', 
+        last: 'Fernandez', 
+        age: 30, 
+        height:180,
+        //gives first and last in new lines
+        studentInfo: function(){ 
+                return this.first + '\n' + this.last; 
+                }
+        };
+console.log(student.first); //method one
+console.log(student['first']); //method two
+console.log(student.last);
+student.first = 'Martini'; //change value
+console.log(student.first);
+student.age++ //increment
+console.log(student.age);
+console.log(student.studentInfo());
+
+
+
+//conditionals, control flows (if else)
+// 18-35 is my target demographic
+// && = AND
+// || = OR
+
+let age = prompt('what is your age?');
+
+if ( (age >= 18) && (age <= 35) ) {
+    status = 'target demo';
+    console.log(status);
+} else {
+    status = 'not my audience';
+    console.log(status);
+};
+
+*/
+
+
+// Switch statements
+// differentiate between weekday vs. weekend
+// day 0 --> Sunday    --> weekend
+// day 1 --> Monday    --> weekday
+// day 2 --> Tuesday   --> weekday
+// day 3 --> Wednesday --> weekday
+// day 4 --> Thrusday  --> weekday
+// day 5 --> Friday    --> weekday
+// day 6 --> Saturday  --> weekend
+
+
+switch (6){
+    case 0:
+        text = 'weekend';
+        break;
+    case 5:
+        text = 'weekend';
+        break;
+    case 6:
+        text = 'weekend';
+        
+    default:
+        text = 'weekday';
+        break;
+}
+
+console.log(text);
+
+
+
+
+
 
 
 
