@@ -1,5 +1,7 @@
 //alert('hello');
 
+//---------------------- Challenge 1: Age in Days --------------------- //
+
 //var birthYear = prompt('what year were you born... Good friends?');
     
 //function ageInDays(birthYear){
@@ -41,8 +43,8 @@ function reset(){
     document.getElementById('ageInDays').remove();
 }
 
+//---------------------- challenge 2: cat generator --------------------- //
 
-//challenge 2: cat generator
 function generateCat(){
     //creates image tag
     var image = document.createElement('img');
@@ -66,7 +68,7 @@ function removeCat(){
     div.remove();
 }
 
-//challenge 3: rock paper scissor
+//---------------------- challenge 3: rock paper scissor --------------------- //
 
 //---------------------- Main Function --------------------- //
 
@@ -225,3 +227,177 @@ function removeAllImages(){
      document.getElementById('paper').remove();
      document.getElementById('scissors').remove();
 }
+
+//---------------------- challenge 4: Change Color --------------------- //
+
+
+//---------------------- Main Function --------------------- //
+function buttonColorChange (formThisAction){
+
+    //gets the choosen form option value and see which function to run
+    //console.log(buttonThingy)
+         if (formThisAction.value == 'red')   {buttonRed();} 
+    else if (formThisAction.value == "green") {buttonGreen();}
+    else if (formThisAction.value == 'random'){buttonRandom();}
+    else if (formThisAction.value == 'reset') {buttonReset();}
+}
+
+//---------------------- Record Color Button --------------------- //
+
+//get all buttons in the html in an array
+var all_buttons = document.getElementsByTagName('button');
+console.log(all_buttons);
+
+//Paste all color information in to storeAllButtonsColor
+var storeAllButtonsColor = [];
+for (let i = 0; i < all_buttons.length; i++) {
+    storeAllButtonsColor.push(all_buttons[i].classList[1]);
+}
+console.log(storeAllButtonsColor);
+
+//---------------------- Mini Function --------------------- //
+
+//function to turn red 
+//using a FOR LOOP, we iterate thru each button
+//we remove from each button the second class
+//we add a class of DANGER from boottrap red color style
+function buttonRed(){
+    for (let i = 0; i < all_buttons.length; i++) {
+        let buttonClass = all_buttons[i].classList;
+            buttonClass.remove(all_buttons[i].classList[1]);
+            buttonClass.add('btn-danger');
+    }
+}
+
+//Same as the red button but instead we use SUCCESS style from boottrap
+function buttonGreen(){
+    for (let i = 0; i < all_buttons.length; i++) {
+        let buttonClass = all_buttons[i].classList;
+            buttonClass.remove(all_buttons[i].classList[1]);
+            buttonClass.add('btn-success');
+    }
+}
+
+
+//We iterate thru the button from before and remove the second class
+//but now we add the Store button class from earlier in the example
+function buttonReset (){
+    for (let i = 0; i < all_buttons.length; i++) {
+        let buttonClass = all_buttons[i].classList;
+            buttonClass.remove(all_buttons[i].classList[1]);
+            buttonClass.add(storeAllButtonsColor[i]);
+
+    } 
+}
+
+//We iterate thru the button from before and remove the second class 
+//but now we use a FOR LOOP to iterate thru a random number to get a random INDEX
+//and then we used the random INDEX to assign it to the ADD operation
+//remember the multiplication of 4 is to get from 0 to 3.99
+//the floor is to make it into an integrate of 0, 1, 2, or 3
+function buttonRandom(){
+    let choices = ['btn-primary', 'btn-danger', 'btn-success', 'btn-warning']
+    for (let i=0; i < all_buttons.length; i++) {
+        let randomIndex = Math.floor(Math.random() * 4);
+        let buttonClass = all_buttons[i].classList;
+            buttonClass.remove(all_buttons[i].classList[1]);
+            buttonClass.add(choices[randomIndex]);
+    }
+}
+
+//---------------------- challenge 4: Change Color --------------------- //
+
+//return to time 6:06:53
+
+//two objects and one array for variables database and cards grouping
+let blackjackGame = {
+    'you': {'scoreSpan': '#your-blackjack-result', 'div': '#your-box', 'score': 0},
+    'dealer': {'scoreSpan': '#dealer-blackjack-result', 'div': '#dealer-box', 'score': 0},
+    'cards': ['2','3','4','5','6','7','8','9','10','J','Q','K','A'],
+}
+
+
+//variable creating so can easily access 'you' or 'dealer'
+//in this way we can call ex:
+//YOU[div] = #your-box
+//DEALER[score] = 0
+//DEALER[div]= #dealer-box
+const YOU = blackjackGame['you']
+const DEALER = blackjackGame['dealer']
+
+//variables for quickly getting the AUDIO
+const hitSound = new Audio('static/sounds/swish.m4a');
+const hitSound2 = new Audio('static/sounds/aww.mp3');
+
+
+
+//querySelector is the same as getElementsById or getElementsByClassname
+//addEventlistener add as an InnerHTML onclick="function()"
+//this method it more clean because then we dont have to go add things to
+//the inner html, we can control it or change it from this file
+//plus the querySelector allow us to select ID, Classes, Tagname etc 
+document.querySelector('#blackjack-hit-button').addEventListener('click', blackjackHit);
+document.querySelector('#blackjack-deal-button').addEventListener('click', blackjackDeal);
+
+//---------------------- Main Function --------------------- //
+
+//this is the main function where everything will get piece together
+//the CARD variable just gets a randomCARD by getting a numberINDEX in the CARDS Array above 
+//to pass down to ShowCard function
+//the YOU or DEALER gets pass down to as ActivePlayer
+function blackjackHit(){
+    let card = randomCard();
+    showCard(YOU,card);
+    showCard(DEALER,card);
+    }
+
+
+//---------------------- Mini Function --------------------- //
+
+//this function does multiple things
+//1. create a varible which creates an IMG element
+//2. Add an SRC to the image
+//2b. Uses 'card' to get which card (this is a function that generates a random Index selector)
+//3. Select activePlayer (YOU or DEALER) and drill down to it DIV (#your-box) and append the img tag
+//4. plays a sound when you added a card to the player DIV area
+function showCard(activePlayer, card){
+    let cardImage = document.createElement('img');
+    //cardImage.src = 'static/images/'+card+'.png';
+    cardImage.src = `static/images/${card}.png`;
+    document.querySelector(activePlayer['div']).appendChild(cardImage);
+    hitSound.play();
+}
+
+//this function is to remove all the cards when you press "DEAL BUTTOM"
+//it does it by selection eacher player respective DIV boxes - and IMG with in it
+//Then using a FOR LOOP it removes each card in the generated Array of AppendChild Cards
+function blackjackDeal (){
+    let yourImages = document.querySelector('#your-box').querySelectorAll('img');
+    let dealerImages = document.querySelector('#dealer-box').querySelectorAll('img');
+
+    //another way of getting the #your-box / # dealer-box using YOU object
+    //let yourImages = document.querySelector(YOU['div']).querySelectorAll('img');
+    //let dealerImages = document.querySelector(DEALER['div']).querySelectorAll('img');
+
+
+    for (let i = 0; i < yourImages.length; i++) {yourImages[i].remove();}
+    for (let i = 0; i < dealerImages.length; i++) {dealerImages[i].remove();}
+    //console.log(yourImages);
+    //hitSound2.play();
+}
+
+//This is a function to generate a random number between 0 and 12
+//this number is used to selected a random index number in the CARDS array above
+function randomCard(){
+    //cards[Math.floor(Math.random()*13)]
+    let randomIndex = Math.floor(Math.random()*13);
+    return blackjackGame['cards'][randomIndex];
+
+
+}
+
+
+
+
+
+
