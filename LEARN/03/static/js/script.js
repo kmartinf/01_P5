@@ -56,8 +56,7 @@ function generateCat(){
     image.src = 'https://thecatapi.com/api/images/get?format=src&type=gif&size=small';
     
     //append image tag to DIV 
-    div.appendChild(image);    
-
+    
     //add an id of catImage to the created img tag
     image.setAttribute('id', 'catImage');
 }
@@ -74,6 +73,7 @@ function removeCat(){
 
 function rpsGame(yourChoice){
     //console.log(yourChoice);
+    div.appendChild(image);    
     //console.log(yourChoice.id);
     console.log('your choice:',yourChoice.id);
 
@@ -305,15 +305,18 @@ function buttonRandom(){
     }
 }
 
-//---------------------- challenge 4: Change Color --------------------- //
+//---------------------- challenge 5: BlackJack --------------------- //
 
 //return to time 6:06:53
+//return to time 6:33:29
 
 //two objects and one array for variables database and cards grouping
 let blackjackGame = {
     'you': {'scoreSpan': '#your-blackjack-result', 'div': '#your-box', 'score': 0},
     'dealer': {'scoreSpan': '#dealer-blackjack-result', 'div': '#dealer-box', 'score': 0},
+    'buttons':{'buttonHit': '#blackjack-hit-button','buttonStand': '#blackjack-stand-button','buttonDeal': '#blackjack-deal-button'},
     'cards': ['2','3','4','5','6','7','8','9','10','J','Q','K','A'],
+    'cardMap': {'2':2,'3':3,'4':4,'5':5,'6':6,'7':7,'8':8,'9':9,'10':10,'J':10,'Q':10,'K':10,'A':[1,11]},
 }
 
 
@@ -324,10 +327,11 @@ let blackjackGame = {
 //DEALER[div]= #dealer-box
 const YOU = blackjackGame['you']
 const DEALER = blackjackGame['dealer']
+const BUTTON = blackjackGame['buttons']
 
 //variables for quickly getting the AUDIO
 const hitSound = new Audio('static/sounds/swish.m4a');
-const hitSound2 = new Audio('static/sounds/aww.mp3');
+//const hitSound2 = new Audio('static/sounds/aww.mp3');
 
 
 
@@ -338,6 +342,11 @@ const hitSound2 = new Audio('static/sounds/aww.mp3');
 //plus the querySelector allow us to select ID, Classes, Tagname etc 
 document.querySelector('#blackjack-hit-button').addEventListener('click', blackjackHit);
 document.querySelector('#blackjack-deal-button').addEventListener('click', blackjackDeal);
+//OR
+//document.querySelector(BUTTON['buttonHit']).addEventListener('click', blackjackHit);
+//document.querySelector(BUTTON['buttonDeal']).addEventListener('click', blackjackDeal);
+
+
 
 //---------------------- Main Function --------------------- //
 
@@ -345,13 +354,18 @@ document.querySelector('#blackjack-deal-button').addEventListener('click', black
 //the CARD variable just gets a randomCARD by getting a numberINDEX in the CARDS Array above 
 //to pass down to ShowCard function
 //the YOU or DEALER gets pass down to as ActivePlayer
+//the updateScore and showScore are part of the DATABASE score and SPAN tag area
 function blackjackHit(){
     let card = randomCard();
-    showCard(YOU,card);
-    showCard(DEALER,card);
-    }
+    //showCard(card, DEALER);
+    showCard(card, YOU);
+    updateScore(card, YOU)
+    showScore(YOU)
+
+}
 
 
+    
 //---------------------- Mini Function --------------------- //
 
 //this function does multiple things
@@ -360,12 +374,14 @@ function blackjackHit(){
 //2b. Uses 'card' to get which card (this is a function that generates a random Index selector)
 //3. Select activePlayer (YOU or DEALER) and drill down to it DIV (#your-box) and append the img tag
 //4. plays a sound when you added a card to the player DIV area
-function showCard(activePlayer, card){
-    let cardImage = document.createElement('img');
-    //cardImage.src = 'static/images/'+card+'.png';
-    cardImage.src = `static/images/${card}.png`;
-    document.querySelector(activePlayer['div']).appendChild(cardImage);
-    hitSound.play();
+function showCard(card, activePlayer){
+    if(activePlayer['score'] <= 21 ){
+        //cardImage.src = 'static/images/'+card+'.png';
+        let cardImage = document.createElement('img');
+        cardImage.src = `static/images/${card}.png`;
+        document.querySelector(activePlayer['div']).appendChild(cardImage);
+        hitSound.play();
+    }
 }
 
 //this function is to remove all the cards when you press "DEAL BUTTOM"
@@ -374,14 +390,34 @@ function showCard(activePlayer, card){
 function blackjackDeal (){
     let yourImages = document.querySelector('#your-box').querySelectorAll('img');
     let dealerImages = document.querySelector('#dealer-box').querySelectorAll('img');
-
-    //another way of getting the #your-box / # dealer-box using YOU object
+    //OR
     //let yourImages = document.querySelector(YOU['div']).querySelectorAll('img');
     //let dealerImages = document.querySelector(DEALER['div']).querySelectorAll('img');
+    //another way of getting the #your-box / # dealer-box using YOU object
 
-
+    //Remove the first card and FOR LOOP the next card in the Array inside the DIV 
     for (let i = 0; i < yourImages.length; i++) {yourImages[i].remove();}
     for (let i = 0; i < dealerImages.length; i++) {dealerImages[i].remove();}
+    
+    //When you press DEAL return the score of the players back to 0 in the DATABASE
+    YOU['score'] = 0;
+    DEALER['score']= 0;
+
+    //Make the scoreback to 0 in the span tag result
+    document.querySelector('#your-blackjack-result').textContent = 0;
+    document.querySelector('#dealer-blackjack-result').textContent = 0;
+    //OR
+    //document.querySelector(YOU['scoreSpan']).textContent = 0;
+    //document.querySelector(DEALER['scoreSpan']).textContent = 0;
+    
+    //make the score span tag result TEXT COLOR back to white
+    document.querySelector('#your-blackjack-result').style.color = '#ffffff';
+    document.querySelector('#dealer-blackjack-result').style.color = '#ffffff';
+    //OR
+    //document.querySelector(YOU['scoreSpan']).style.color = '#ffffff';
+    //document.querySelector(DEALER['scoreSpan']).style.color = '#ffffff';
+
+
     //console.log(yourImages);
     //hitSound2.play();
 }
@@ -392,9 +428,38 @@ function randomCard(){
     //cards[Math.floor(Math.random()*13)]
     let randomIndex = Math.floor(Math.random()*13);
     return blackjackGame['cards'][randomIndex];
-
-
 }
+
+function updateScore(card, activePlayer){
+    //if player score is = or less than 21, keep playing!
+    if(activePlayer['score'] <= 21 ){
+        if (card === 'A'){
+        //if adding 11 keeps me below 21, add 11. Otherwise, add 1
+                if (activePlayer['score'] +  blackjackGame['cardMap'][card] <= 21){
+                    activePlayer['score'] += blackjackGame['cardMap'][card][1];
+                } else {
+                    activePlayer['score'] += blackjackGame['cardMap'][card][0];
+                }
+        //else STOP playing and show the score of the player 
+        } else {
+            activePlayer['score'] += blackjackGame['cardMap'][card];
+        }   
+    }
+}
+
+//Show score of the player in span text tag
+function showScore(activePlayer){
+    //IF the player score is bigger than 21, than show text BUST and in RED
+    if(activePlayer['score'] > 21 ){
+        document.querySelector(activePlayer['scoreSpan']).textContent = 'BUST!';
+        document.querySelector(activePlayer['scoreSpan']).style.color = 'red';
+    // ELSE keep showing the SCORE number (in white by default)
+    }else {
+    document.querySelector(activePlayer['scoreSpan']).textContent = activePlayer['score'];
+    }
+}
+
+
 
 
 
